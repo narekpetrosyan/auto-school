@@ -1,8 +1,8 @@
 -- CreateTable
-CREATE TABLE "Question" (
+CREATE TABLE "question" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "text" TEXT NOT NULL
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Question_text_key" ON "Question"("text");
+CREATE UNIQUE INDEX "question_text_key" ON "question"("text");

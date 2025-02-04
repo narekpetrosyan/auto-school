@@ -12,7 +12,14 @@ export class QuestionService {
   }
 
   findAll() {
-    return this.prismaService.question.findMany();
+    return this.prismaService.question.findMany({
+      omit: {
+        rightOptionId: true,
+      },
+      include: {
+        rightOption: true,
+      },
+    });
   }
 
   findOne(id: number) {

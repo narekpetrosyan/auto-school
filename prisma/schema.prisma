@@ -14,6 +14,20 @@ datasource db {
 }
 
 model Question {
-  id    String     @default(uuid()) @id
-  text String  @unique
+  id   String @id @default(uuid())
+  text String @unique
+
+  rightOptionId String?
+  rightOption Option? @relation(name: "RightAnswer", fields: [rightOptionId], references: [id])
+
+  @@map("Questions")
+}
+
+model Option {
+  id   String @id @default(uuid())
+  text String @unique
+
+  rightOption Question[] @relation(name: "RightAnswer")
+
+  @@map("Options")
 }
