@@ -6,10 +6,18 @@ import {
   Patch,
   Param,
   Delete,
+  UploadedFile,
+  ParseFilePipe,
+  UseInterceptors,
+  UseFilters,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileTypePipe } from '../pipes/file-type.pipe';
+import { FileSizePipe } from '../pipes/file-size.pipe';
+import { DeleteFileOnErrorFilter } from '../exceptions/delete-file-on-error.exception';
 
 @Controller({
   path: 'questions',
@@ -18,8 +26,25 @@ export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
   @Post()
-  create(@Body() createQuestionDto: CreateQuestionDto) {
-    return this.questionService.create(createQuestionDto);
+  @UseInterceptors(FileInterceptor('image'))
+  @UseFilters(DeleteFileOnErrorFilter)
+  create(
+    @Body() createQuestionDto: CreateQuestionDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileSizePipe({ maxSize: 1000000 }),
+          new FileTypePipe({ fileType: new RegExp(/(jpg|jpeg|png)$/) }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const filePath = file.path;
+    return this.questionService.create({
+      ...createQuestionDto,
+      filePath,
+    });
   }
 
   @Get()
@@ -29,7 +54,7 @@ export class QuestionController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.questionService.findOne(+id);
+    return this.questionService.findOne(id);
   }
 
   @Patch(':id')
@@ -37,11 +62,11 @@ export class QuestionController {
     @Param('id') id: string,
     @Body() updateQuestionDto: UpdateQuestionDto,
   ) {
-    return this.questionService.update(+id, updateQuestionDto);
+    return this.questionService.update(id, updateQuestionDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.questionService.remove(+id);
+    return this.questionService.remove(id);
   }
 }

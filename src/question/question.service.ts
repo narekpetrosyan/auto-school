@@ -7,8 +7,19 @@ import { PrismaService } from '../prisma/prisma.service';
 export class QuestionService {
   constructor(private prismaService: PrismaService) {}
 
-  create(createQuestionDto: CreateQuestionDto) {
-    return 'This action adds a new question';
+  create(createQuestionDto: CreateQuestionDto & { filePath: string }) {
+    return this.prismaService.question.create({
+      data: {
+        text: createQuestionDto.text,
+        image: createQuestionDto.filePath,
+      },
+      omit: {
+        rightOptionId: true,
+      },
+      include: {
+        rightOption: true,
+      },
+    });
   }
 
   findAll() {
@@ -22,15 +33,15 @@ export class QuestionService {
     });
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} question`;
   }
 
-  update(id: number, updateQuestionDto: UpdateQuestionDto) {
+  update(id: string, updateQuestionDto: UpdateQuestionDto) {
     return `This action updates a #${id} question`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} question`;
   }
 }

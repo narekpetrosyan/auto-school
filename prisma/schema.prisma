@@ -16,6 +16,7 @@ datasource db {
 model Question {
   id   String @id @default(uuid())
   text String @unique
+  image String?
 
   rightOptionId String?
   rightOption Option? @relation(name: "RightAnswer", fields: [rightOptionId], references: [id])
