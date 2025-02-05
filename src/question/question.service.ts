@@ -12,13 +12,23 @@ export class QuestionService {
       data: {
         text: createQuestionDto.text,
         image: createQuestionDto.filePath,
-        rightOptionId: createQuestionDto.rightOptionId,
+        rightOption: {
+          connect: { id: createQuestionDto.rightOptionId },
+        },
+        options: {
+          connect: [
+            {
+              id: createQuestionDto.rightOptionId,
+            },
+          ],
+        },
       },
       omit: {
         rightOptionId: true,
       },
       include: {
         rightOption: true,
+        options: true,
       },
     });
   }
@@ -30,6 +40,7 @@ export class QuestionService {
       },
       include: {
         rightOption: true,
+        options: true,
       },
     });
   }
