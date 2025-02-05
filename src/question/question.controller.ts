@@ -1,15 +1,15 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UploadedFile,
+  Get,
+  Param,
   ParseFilePipe,
-  UseInterceptors,
+  Patch,
+  Post,
+  UploadedFile,
   UseFilters,
+  UseInterceptors,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
@@ -18,6 +18,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { FileTypePipe } from '../pipes/file-type.pipe';
 import { FileSizePipe } from '../pipes/file-size.pipe';
 import { DeleteFileOnErrorFilter } from '../exceptions/delete-file-on-error.exception';
+import { Role } from '../auth/decorators/role.decorator';
+import { RoleTypes } from '../auth/types/role';
 
 @Controller({
   path: 'questions',
@@ -27,6 +29,7 @@ export class QuestionController {
 
   @Post()
   @UseInterceptors(FileInterceptor('image'))
+  @Role(RoleTypes.ADMIN)
   @UseFilters(DeleteFileOnErrorFilter)
   create(
     @Body() createQuestionDto: CreateQuestionDto,
