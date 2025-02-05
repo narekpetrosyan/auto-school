@@ -14,12 +14,15 @@ datasource db {
 }
 
 model Question {
-  id   String @id @default(uuid())
-  text String @unique
+  id    String  @id @default(uuid())
+  text  String
   image String?
 
-  rightOptionId String?
-  rightOption Option? @relation(name: "RightAnswer", fields: [rightOptionId], references: [id])
+  options Option[]
+
+  rightOptionId      String?
+  rightOption        Option?              @relation(name: "RightAnswer", fields: [rightOptionId], references: [id])
+  OptionsOnQuestions OptionsOnQuestions[]
 
   @@map("Questions")
 }
@@ -28,7 +31,19 @@ model Option {
   id   String @id @default(uuid())
   text String @unique
 
-  rightOption Question[] @relation(name: "RightAnswer")
+  questions Question[]
+
+  rightOption        Question[]           @relation(name: "RightAnswer")
+  OptionsOnQuestions OptionsOnQuestions[]
 
   @@map("Options")
+}
+
+model OptionsOnQuestions {
+  Option     Option   @relation(fields: [optionId], references: [id])
+  optionId   String
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String
+
+  @@id([optionId, questionId])
 }

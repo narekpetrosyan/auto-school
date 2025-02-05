@@ -4,4 +4,8 @@ export class CreateQuestionDto {
   @IsString()
   @IsNotEmpty()
   text: string;
+
+  @IsString()
+  @IsNotEmpty()
+  rightOptionId: string;
 }

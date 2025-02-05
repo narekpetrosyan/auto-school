@@ -12,6 +12,7 @@ export class QuestionService {
       data: {
         text: createQuestionDto.text,
         image: createQuestionDto.filePath,
+        rightOptionId: createQuestionDto.rightOptionId,
       },
       omit: {
         rightOptionId: true,
