@@ -61,6 +61,7 @@ export class QuestionController {
   }
 
   @Patch(':id')
+  @Role(RoleTypes.ADMIN)
   update(
     @Param('id') id: string,
     @Body() updateQuestionDto: UpdateQuestionDto,
@@ -69,6 +70,7 @@ export class QuestionController {
   }
 
   @Delete(':id')
+  @Role(RoleTypes.ADMIN)
   remove(@Param('id') id: string) {
     return this.questionService.remove(id);
   }

@@ -25,14 +25,22 @@ export class QuestionService {
         text: createQuestionDto.text,
         image: createQuestionDto.filePath,
         rightOption: {
-          connect: { id: createQuestionDto.rightOptionId },
+          connect: { id: option.id },
         },
         options: {
-          connect: [
-            {
-              id: option.id,
-            },
-          ],
+          ...(createQuestionDto.options && {
+            create: createQuestionDto.options
+              .filter((el) => !el.id)
+              .map((opt) => ({
+                text: opt.text,
+              })),
+            connect: [
+              ...createQuestionDto.options.filter((el) => !!el.id),
+              { id: option.id },
+            ].map((opt) => ({
+              id: opt.id,
+            })),
+          }),
         },
       },
       omit: {
@@ -58,11 +66,36 @@ export class QuestionService {
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} question`;
+    return this.prismaService.question.findUnique({ where: { id } });
   }
 
   update(id: string, updateQuestionDto: UpdateQuestionDto) {
-    return `This action updates a #${id} question`;
+    const { text, options, rightOptionId } = updateQuestionDto;
+
+    return this.prismaService.question.update({
+      where: { id },
+      data: {
+        text,
+        rightOption: {
+          connect: { id: rightOptionId },
+        },
+        options: {
+          ...(options && {
+            create: options
+              .filter((el) => !el.id)
+              .map((opt) => ({
+                text: opt.text,
+              })),
+            connect: [
+              ...options.filter((el) => !!el.id),
+              { id: rightOptionId },
+            ].map((opt) => ({
+              id: opt.id,
+            })),
+          }),
+        },
+      },
+    });
   }
 
   remove(id: string) {

@@ -11,7 +11,9 @@ import { SessionModule } from '../session/session.module';
     JwtModule.registerAsync({
       global: true,
       useFactory: (configService: ConfigService) => ({
-        signOptions: { expiresIn: '60m' },
+        signOptions: {
+          expiresIn: `${new Date(Date.now() + 1000 * 60 * 60 * 24).getMinutes()}m`,
+        },
         secret: configService.get('JWT_SECRET'),
       }),
       inject: [ConfigService],

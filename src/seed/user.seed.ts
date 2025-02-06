@@ -13,7 +13,6 @@ const ADMIN_USER = {
 };
 
 async function main() {
-  // config();
   console.log('Seeding admin user...');
   await prisma.user.create({ data: ADMIN_USER });
 }

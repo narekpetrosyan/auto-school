@@ -29,7 +29,7 @@ model Question {
 
 model Option {
   id   String @id @default(uuid())
-  text String @unique
+  text String
 
   questions Question[]
 

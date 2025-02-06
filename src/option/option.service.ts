@@ -7,19 +7,19 @@ import { PrismaService } from '../prisma/prisma.service';
 export class OptionService {
   constructor(private prismaService: PrismaService) {}
 
-  create(createOptionDto: CreateOptionDto) {
-    return 'This action adds a new option';
+  create(data: CreateOptionDto) {
+    return this.prismaService.option.create({ data });
   }
 
   findAll() {
-    return `This action returns all option`;
+    return this.prismaService.option.findMany();
   }
 
   findOne(id: string) {
     return this.prismaService.option.findFirst({ where: { id } });
   }
 
-  update(id: string, updateOptionDto: UpdateOptionDto) {
+  update(id: string, data: UpdateOptionDto) {
     return `This action updates a #${id} option`;
   }
 

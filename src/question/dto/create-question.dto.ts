@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateQuestionDto {
   @IsString()
@@ -8,4 +8,8 @@ export class CreateQuestionDto {
   @IsString()
   @IsNotEmpty()
   rightOptionId: string;
+
+  @IsOptional()
+  @IsArray()
+  options?: { id?: string; text: string }[];
 }
