@@ -14,10 +14,13 @@ export class UsersService {
     });
   }
 
-  async create(dto: CreateUserDto): Promise<UserOutput> {
+  async create(dto: CreateUserDto): Promise<Omit<UserOutput, 'password'>> {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
     return this.prismaService.user.create({
       data: { ...dto, password: hashedPassword },
+      omit: {
+        password: true,
+      },
     });
   }
 }

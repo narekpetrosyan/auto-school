@@ -9,12 +9,14 @@ import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import { SessionService } from '../../session/session.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
+    private sessionService: SessionService,
     private reflector: Reflector,
   ) {}
 
@@ -34,13 +36,16 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException();
     }
-    try {
-      request['user'] = await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get('JWT_SECRET'),
-      });
-    } catch {
-      throw new UnauthorizedException();
+    const user = await this.jwtService.verifyAsync<{ id: string }>(token, {
+      secret: this.configService.get('JWT_SECRET'),
+    });
+
+    if (!(await this.sessionService.validateSession(token, user.id))) {
+      throw new UnauthorizedException('Invalid session');
     }
+    request['user'] = user;
+    request['token'] = token;
+
     return true;
   }
 

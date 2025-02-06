@@ -6,12 +6,14 @@ import {
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import { SessionService } from '../session/session.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private sessionService: SessionService,
   ) {}
 
   async signIn(
@@ -32,8 +34,19 @@ export class AuthService {
 
     const payload = { sub: user.id, email: user.email, role: user.role };
 
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    await this.sessionService.createSession({
+      sessionToken: accessToken,
+      userId: user.id,
+    });
+
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token: accessToken,
     };
+  }
+
+  async signOut(sessionToken: string) {
+    await this.sessionService.deleteSession(sessionToken);
   }
 }
