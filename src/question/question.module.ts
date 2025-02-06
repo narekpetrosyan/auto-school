@@ -3,6 +3,7 @@ import { QuestionService } from './question.service';
 import { QuestionController } from './question.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { OptionModule } from '../option/option.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { diskStorage } from 'multer';
         },
       }),
     }),
+    OptionModule,
   ],
   controllers: [QuestionController],
   providers: [QuestionService],

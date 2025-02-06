@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { RoleGuard } from './auth/guards/role.guard';
+import { OptionModule } from './option/option.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { RoleGuard } from './auth/guards/role.guard';
     QuestionModule,
     AuthModule,
     UsersModule,
+    OptionModule,
   ],
   controllers: [],
   providers: [

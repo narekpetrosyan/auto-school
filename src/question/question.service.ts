@@ -1,13 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { OptionService } from '../option/option.service';
 
 @Injectable()
 export class QuestionService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private optionService: OptionService,
+  ) {}
 
-  create(createQuestionDto: CreateQuestionDto & { filePath: string }) {
+  async create(createQuestionDto: CreateQuestionDto & { filePath: string }) {
+    const option = await this.optionService.findOne(
+      createQuestionDto.rightOptionId,
+    );
+
+    if (!option) {
+      throw new NotFoundException('Option not found');
+    }
+
     return this.prismaService.question.create({
       data: {
         text: createQuestionDto.text,
@@ -18,7 +30,7 @@ export class QuestionService {
         options: {
           connect: [
             {
-              id: createQuestionDto.rightOptionId,
+              id: option.id,
             },
           ],
         },

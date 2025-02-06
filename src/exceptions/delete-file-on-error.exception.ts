@@ -2,14 +2,14 @@ import {
   ExceptionFilter,
   Catch,
   ArgumentsHost,
-  BadRequestException,
+  HttpException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import * as fs from 'fs';
 
-@Catch(BadRequestException)
+@Catch(HttpException)
 export class DeleteFileOnErrorFilter implements ExceptionFilter {
-  catch(exception: BadRequestException, host: ArgumentsHost) {
+  catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
