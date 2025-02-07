@@ -20,6 +20,7 @@ import { FileSizePipe } from '../pipes/file-size.pipe';
 import { DeleteFileOnErrorFilter } from '../exceptions/delete-file-on-error.exception';
 import { Role } from '../auth/decorators/role.decorator';
 import { RoleTypes } from '../auth/types/role';
+import { ApiConsumes } from '@nestjs/swagger';
 
 @Controller({
   path: 'questions',
@@ -28,6 +29,7 @@ export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
   @Post()
+  @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
   @Role(RoleTypes.ADMIN)
   @UseFilters(DeleteFileOnErrorFilter)
@@ -61,6 +63,7 @@ export class QuestionController {
   }
 
   @Patch(':id')
+  @ApiConsumes('multipart/form-data')
   @Role(RoleTypes.ADMIN)
   update(
     @Param('id') id: string,

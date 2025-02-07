@@ -14,6 +14,8 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { Request, Response } from 'express';
 import { Public } from './decorators/public.decorator';
+import { ApiOkResponse } from '@nestjs/swagger';
+import { UserOutput } from '../users/types/user.types';
 
 @Controller({
   path: 'auth',
@@ -24,6 +26,9 @@ export class AuthController {
     private usersService: UsersService,
   ) {}
 
+  @ApiOkResponse({
+    description: 'User access token',
+  })
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -35,6 +40,10 @@ export class AuthController {
     return response.cookie('access_token', access_token).json({ access_token });
   }
 
+  @ApiOkResponse({
+    description: 'The user records',
+    type: UserOutput,
+  })
   @Public()
   @Post('/register')
   async register(@Body() dto: CreateUserDto) {
@@ -47,6 +56,9 @@ export class AuthController {
     return this.usersService.create(dto);
   }
 
+  @ApiOkResponse({
+    description: 'Logging out user',
+  })
   @Post('/logout')
   @HttpCode(HttpStatus.OK)
   async signOut(
