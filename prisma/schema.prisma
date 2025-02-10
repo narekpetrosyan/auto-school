@@ -20,6 +20,8 @@ model Question {
 
   options Option[]
 
+  groupId            String?
+  Group              Group?               @relation(fields: [groupId], references: [id])
   rightOptionId      String?
   rightOption        Option?              @relation(name: "RightAnswer", fields: [rightOptionId], references: [id])
   OptionsOnQuestions OptionsOnQuestions[]
@@ -71,6 +73,15 @@ model Session {
   userId String
 
   @@map("Sessions")
+}
+
+model Group {
+  id   String @id @default(uuid())
+  name String
+
+  questions Question[]
+
+  @@map("Groups")
 }
 
 enum RoleType {

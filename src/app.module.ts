@@ -13,6 +13,7 @@ import { AuthGuard } from './auth/guards/auth.guard';
 import { RoleGuard } from './auth/guards/role.guard';
 import { OptionModule } from './option/option.module';
 import { SessionModule } from './session/session.module';
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SessionModule } from './session/session.module';
       serveRoot: '/uploads/',
     }),
     PrismaModule,
+    GroupModule,
     QuestionModule,
     AuthModule,
     UsersModule,
